@@ -52,8 +52,18 @@ JOIN bookings ON passengers.id = bookings.passenger_id
 WHERE EXTRACT (YEAR FROM bookings.travel_date) = 2025
   AND EXTRACT (MONTH FROM bookings.travel_date) = 5;
 
+SELECT transport.type, COUNT(bookings.id) AS total_bookings FROM bookings 
+JOIN transport ON bookings.transport_id = transport.
+GROUP BY transport.type
+ORDER BY total.bookings DESC LIMIT 1;
+
 SELECT 40 - COUNT (bookings.id) AS free_seats FROM bookings 
 WHERE bookings.transport_id = 1;
+
+SELECT passengers.name, passengers.passport_number, transport.type, bookings.seat_number
+FROM bookings
+JOIN passengers ON bookings.passenger_id = passengers.id
+JOIN transport ON bookings.transport_id = transport.id;
 
 SELECT passengers.id, passengers.name, passengers.passport_number
 FROM passengers
@@ -69,6 +79,12 @@ AND EXISTS (
     WHERE bookings.passenger_id = passengers.id
       AND transport.type = 'train'
 );
+
+SELECT passengers.id, passengers.name, COUNT(DISTINCT transport.type) AS transport_type_count FROM passengers
+JOIN bookings ON passengers.id = bookings.passenger_id
+JOIN transport ON bookings.transport_id = transport.id
+GROUP BY passengers.id, passengers.name
+HAVING COUNT(DISTINCT transport.type) > 1;
 
 
 
